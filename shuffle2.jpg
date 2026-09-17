@@ -1,0 +1,88 @@
+
+function shuffle(mainArr, type) {
+    
+    var ixOfCurItem = 0;
+    var maxShuffleCount = 8;
+    var shuffleCount = 0;
+    var shuffleIxSet = new Set();
+    prevShuffIxSetSize = 0;
+    for(var i=0; i<maxShuffleCount; i++){
+
+        while(shuffleIxSet.size <= prevShuffIxSetSize) {
+            ixOfCurItem = parseInt(parseInt(Math.random() * mainArr.length));
+            shuffleIxSet.add(ixOfCurItem);
+        } 
+
+        prevShuffIxSetSize += 1;
+        ixOfCurItem = parseInt(parseInt(Math.random() * mainArr.length));
+        
+        var p1Arr = copyOf(mainArr, 0,ixOfCurItem);
+        var p2Arr = copyOf(mainArr, ixOfCurItem+1,mainArr.length - 1);
+
+        mainArr = p2Arr;
+        mainArr = pushAll(mainArr, p1Arr);
+        shuffleCount += 1;
+       
+    }
+    
+
+    console.log("end of shuffle: ",mainArr, `set: ${shuffleIxSet}`);
+}
+
+
+function splitToParts(mainArr) {
+
+        var cnum = parseInt(Math.random() * mainArr.length);
+        var ixOfcnum = indexOf(mainArr, cnum);
+        var p1Arr = copyOf(mainArr, 0,ixOfcnum-1);
+        var p2Arr = copyOf(mainArr, ixOfcnum+1,mainArr.length - 1);
+        var resMap = new Map();
+        resMap.set("p1Arr", p1Arr)
+        resMap.set("p2Arr",p2Arr);
+        resMap.set("p3Num", cnum);
+        return resMap;
+}
+
+function indexOf(mainArr, targetNum) {
+
+    for(var i=0; i<mainArr.length; i++){
+        if(mainArr[i] === targetNum) {
+            return i;
+        }
+    }
+}
+
+
+function copyOf(mainArr, ixFrom, ixTo) {
+
+    if(ixFrom < 0 || ixTo > mainArr.length - 1){
+        throw new Error("invalid indexes");
+    }
+    
+    var finalArr = [];
+    for(var i=ixFrom; i<=ixTo; i++){
+        finalArr.push(mainArr[i]);
+    }
+
+    return finalArr;
+}
+
+function pushAll(mainArr, secArr) {
+
+   
+    var finalSize = (mainArr.length) + (secArr.length);
+    var finalArr = [finalSize];
+    for(var i=0; i<mainArr.length; i++) {
+        finalArr[i] = mainArr[i];
+    }
+
+    for(var i=0,j=mainArr.length; i<secArr.length; i++,j++) {
+        finalArr[j] = secArr[i];
+    }
+
+    return finalArr;
+    
+}
+
+
+//shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]);

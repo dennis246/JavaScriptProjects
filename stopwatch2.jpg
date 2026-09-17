@@ -1,0 +1,269 @@
+
+var debugLogInd = false;
+function debugLog(...messages) {
+    if(debugLogInd) {
+        console.log(messages);
+    }
+}
+
+function randomText(textLen) {
+    var chars = "qwertyuiopasdfghjklmnbvcxz";
+    const numbers = "0987612345";
+    const charsUpper = chars.toUpperCase();
+    const charsSetStr = chars+numbers+charsUpper;
+    const charsSetArr = Array.from(charsSetStr);
+    var charFArr = [];
+
+    const textLenN = parseInt(Math.random() * textLen);
+    for(var i=0; i<textLenN; i++) {
+        var currCharIx = parseInt(Math.random() * charsSetStr.length);
+        charFArr.push(charsSetArr[currCharIx]);
+    }
+
+    return charFArr.join("");
+
+}
+
+
+var btnClickCount = 0;
+var msecsDelay = 8;
+var secsDelay = 1000;
+var minsDelay = 1000 * 60;
+var hrsDelay = 1000 * 60 * 60;
+
+// msecsDelay = 0;
+// secsDelay = 0;
+// minsDelay = 8;
+// hrsDelay = 1000;
+
+msecsDelay = 1;
+secsDelay = 1;
+minsDelay = 1;
+hrsDelay = 1;
+
+// causes dom update
+const delay = (delayDuration) => new Promise(r => setTimeout(r,delayDuration));
+
+var toggleState = 0;
+function defineTimerPanel() {
+    
+    var firstPanelDiv = document.createElement("div");
+    firstPanelDiv.id = `firstPanelDiv`;
+    firstPanelDiv.style = `margin:20% auto 0 auto;width:60%;
+                      position:sticky;top:0; display: block;
+                      font-family: Arial; padding: 5px 10px;
+                      font-size:24px; background: inherit;
+                      border: 2px dotted white;`;
+
+    var timerArrayDiv = document.createElement("div");
+    timerArrayDiv.id = `timerArrayDiv`;
+    timerArrayDiv.style = `margin:auto;color:white;
+                      background: black;
+                      display:ruby-text;
+                      font-family: Arial; 
+                      font-size:24px;`;
+    
+    var hrsDiv = document.createElement("div");
+    hrsDiv.id = `hrsDiv`;
+    hrsDiv.style = `padding: 2px;`;
+    hrsDiv.innerHTML = "00";
+    timerArrayDiv.append(hrsDiv);
+
+    var sptr1Div = document.createElement("div");
+    sptr1Div.id = `sp1Div`;
+    sptr1Div.style = `padding: 2px;`;
+    sptr1Div.innerHTML = ":";
+    timerArrayDiv.append(sptr1Div);
+
+    var minsDiv = document.createElement("div");
+    minsDiv.id = `minsDiv`;
+    minsDiv.style = `padding: 2px;`;
+    minsDiv.innerHTML = "00";
+    timerArrayDiv.append(minsDiv);
+    
+    var sptr2Div = document.createElement("div");
+    sptr2Div.id = `sptr2Div`;
+    sptr2Div.style = `padding: 2px;`;
+    sptr2Div.innerHTML = ":";
+    timerArrayDiv.append(sptr2Div);
+
+    var secsDiv = document.createElement("div");
+    secsDiv.id = `secsDiv`;
+    secsDiv.style = `padding: 2px;`;
+    secsDiv.innerHTML = "00";
+    timerArrayDiv.append(secsDiv);
+
+    var sptr3Div = document.createElement("div");
+    sptr3Div.id = `sptr3Div`;
+    sptr3Div.style = `padding: 2px;`;
+    sptr3Div.innerHTML = ":";
+    timerArrayDiv.append(sptr3Div);
+
+    var msecsDiv = document.createElement("div");
+    msecsDiv.id = `msecsDiv`;
+    msecsDiv.style = `padding: 2px;`;
+    msecsDiv.innerHTML = "00";
+    timerArrayDiv.append(msecsDiv);
+
+
+    var sptr4Div = document.createElement("div");
+    sptr4Div.id = `sptr3Div`;
+    sptr4Div.style = `padding: 2px;`;
+    sptr4Div.innerHTML = " ";
+    timerArrayDiv.append(sptr4Div);
+
+
+    var toggleDiv = document.createElement("div");
+    toggleDiv.id = `toggleDiv`;
+    toggleDiv.style = `margin: auto 2%; padding: 0 5px; background:red; color:white;
+                      border: 2px dotted transparent;
+                      `;
+    //toggleDiv.innerHTML = "Toggle";
+    toggleDiv.innerHTML = toggleState == 1 ? "Stop" : "Start";
+    toggleDiv.onclick = (e) => { 
+
+        btnClickCount+=1;
+        
+        if(toggleState == 1) { 
+            toggleState = 0;
+        } else {
+            toggleState = 1 
+        }; 
+        toggleDiv.innerHTML = toggleState === 1 ? "Stop" : "Start"; 
+        // console.log("toggleState: ",toggleState);
+        if(toggleState === 1) {
+            startTimer();
+        } else {
+            stopTimer(e);
+        }
+        
+    };
+
+    timerArrayDiv.append(toggleDiv);
+    firstPanelDiv.append(timerArrayDiv);
+    document.body.append(firstPanelDiv);
+
+    var secondPanelDiv = document.createElement("div");
+    secondPanelDiv.id = `secondPanelDiv`;
+    secondPanelDiv.style = `margin:auto;width:60%;
+                      color:white; display:ruby-text;
+                      font-family: Arial;
+                      padding: 5px 10px;
+                      font-size:20px; font-weight:100;
+                      border-width: 1px solid white;`;
+    document.body.append(secondPanelDiv);
+    
+    
+}
+
+async function startTimer() {
+    var msecsDiv = document.getElementById("msecsDiv");
+    var secsDiv = document.getElementById("secsDiv");
+    var minsDiv = document.getElementById("minsDiv");
+    var hrsDiv = document.getElementById("hrsDiv");
+
+    var i=0;
+    var cmsecsVal = 0;
+    var csecsVal = 0;
+    var cminsVal = 0;
+    var chrsVal = 0;
+    
+    // 86400000
+    while(i < 8640000) {
+
+        if(toggleState == 0){
+            stopTimer();
+            break;
+        }
+
+        msecsDiv.innerHTML = cmsecsVal < 10 ? "0"+cmsecsVal : cmsecsVal;
+        cmsecsVal +=1;
+        if(cmsecsVal == 100) {
+            cmsecsVal = 0;
+        }
+        
+
+        if( i % 100 == 0) {
+            secsDiv.innerHTML = csecsVal < 10 ? "0"+csecsVal : csecsVal;
+            csecsVal +=1;
+            if(csecsVal == 60) {
+                csecsVal = 0;
+            }
+        }
+
+        if( i % (100 * 60) == 0) {
+            minsDiv.innerHTML = cminsVal < 10 ? "0"+cminsVal : cminsVal;
+            cminsVal +=1;
+            if(cminsVal == 60) {
+                cminsVal = 0;
+            }
+        }
+        
+        if( i % (100 * 60 * 60) == 0) {
+            hrsDiv.innerHTML = chrsVal < 10 ? "0"+chrsVal : chrsVal;
+            chrsVal +=1;
+            if(chrsVal == 24) {
+                chrsVal = 0;
+            }
+            
+            console.log(`${i} :: ${hrsDiv.innerHTML}:${minsDiv.innerHTML}:${secsDiv.innerHTML}:${msecsDiv.innerHTML}`);
+        }
+
+        await delay(0);
+        
+        i+=1;
+        
+    }
+    
+
+}
+
+
+function stopTimer(e) {
+
+    if(e === undefined){
+        return;
+    }
+    console.log("stop timer: ", e);
+    
+    var msecsDiv = document.getElementById("msecsDiv");
+    var secsDiv = document.getElementById("secsDiv");
+    var minsDiv = document.getElementById("minsDiv");
+    var hrsDiv = document.getElementById("hrsDiv");
+
+    var secondPanelDiv = document.getElementById("secondPanelDiv");
+    var secondPanelDivNodesLen = secondPanelDiv.childNodes.length;
+
+
+    var panelRow = document.createElement("div");
+    panelRow.style = `margin:auto; width:400px; display:flex;padding: 5px 10px;`;
+    
+    var panelRowCountDiv = document.createElement("div");
+    panelRowCountDiv.style = `width:100%;width:10%;display:flex;font-size:16px;vertical-align:middle;padding:inherit;`;
+    panelRowCountDiv.innerHTML = (secondPanelDivNodesLen + 1) + ". ";
+    
+
+    var timeCoveredDiv = document.createElement("div");
+    timeCoveredDiv.id = `timeCoveredDiv_${randomText(8)}`;
+    timeCoveredDiv.style = `width:100%; height:50px; color:white; display:flex
+                            border: 2px dotted transparent;`;
+
+    
+    timeCoveredDiv.innerHTML = hrsDiv.innerHTML+":"+minsDiv.innerHTML+":"+secsDiv.innerHTML+":"+msecsDiv.innerHTML;
+    
+
+    panelRow.append(panelRowCountDiv);
+    panelRow.append(timeCoveredDiv);
+    
+    secondPanelDiv.append(panelRow);
+    
+    hrsDiv.innerHTML = "00";
+    minsDiv.innerHTML = "00";
+    secsDiv.innerHTML = "00";
+    msecsDiv.innerHTML = "000";
+    toggleDiv.innerHTML = "Start";
+    toggleState = 0;
+}
+
+debugLogInd = true;
+defineTimerPanel();

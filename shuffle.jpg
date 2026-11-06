@@ -1,6 +1,6 @@
 function shuffle(mainArr) {
 
-        var totalSize = mainArr.length;
+        var totalSize = mainArr.length - 1;
 
         var cuts = 0;
         while (cuts == 0) {
@@ -26,7 +26,7 @@ function shuffle(mainArr) {
 
         try {
 
-            var maxIndex = currentArr.length;
+            var maxIndex = currentArr.length - 1; 
             var finalCutArr = [];
             var cutAt = parseInt(Math.random() * maxIndex);
 
@@ -58,11 +58,17 @@ function shuffle(mainArr) {
             }
 
             for (var x = 0; x < finalCutArr.length; x++, appendAt++) {
-                currentArr = addAt(currentArr, appendAt, finalCutArr[x]);
+
+                if(appendAt > currentArr.length - 1) {
+                    currentArr.push(finalCutArr[x]);
+                } else {
+                    currentArr = addAt(currentArr, appendAt, finalCutArr[x]);
+                }
+                
             }
 
         } catch (error) {
-            throw new Error(error);
+            throw new Error(error,currentArr, appendAt, finalCutArr[x]);
         }
 
 
@@ -70,21 +76,21 @@ function shuffle(mainArr) {
     }
 
 
-    function addAt(mainArr, targetiIndex, item) {
+    function addAt(mainArr, targetIndex, item) {
 
-        var mainArrInc = [mainArr.length + 1];
+        var mainArrInc = [];
 
-        if (targetiIndex < 0) {
+        if (targetIndex < 0 || targetIndex > mainArr.length - 1) {
             throw new Error("Invalid index for method addAt");
         }
 
-        if (targetiIndex > mainArr.length - 1) {
-            targetiIndex = mainArrInc.length - 1;
-        }
+        // if (targetIndex > mainArr.length - 1) {
+        //     targetIndex = mainArr.length - 1;
+        // }
 
         var itemAddedInd = 0;
         for (var i = 0, pi = 0; i < mainArr.length; i++, pi++) {
-            if (i == targetiIndex) {
+            if (i == targetIndex) {
                 mainArrInc[pi] = item;
                 ++pi;
                 ++itemAddedInd;
@@ -116,5 +122,21 @@ function shuffle(mainArr) {
         return finalArr;
     }
 
+    function remove(mainArr, item) {
 
-// console.log(shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]));
+        var finalArr = [];
+        for (var i = 0; i < mainArr.length; i++) {
+
+            if (mainArr[i] == item) {
+                continue;
+            } else {
+                finalArr.push(mainArr[i]);
+            }
+        }
+
+        return finalArr;
+    }
+
+
+//console.log(shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]));
+//console.log(shuffle([0,1,2]));
